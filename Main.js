@@ -1,7 +1,8 @@
+
 var currentAlg = document.getElementById("algorithms").value;
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
-var speed = 10;
+var speed = 50;
 const tileSize = 20;
 const border = 2;
 const tileWidth = Math.floor(canvas.width/tileSize);
@@ -16,6 +17,7 @@ var currentDist = 0;
 var wallGrid;
 var visitedGrid;
 var distanceGrid;
+var finalPath;
 
 //console.table(wallGrid)
 
@@ -83,6 +85,10 @@ function drawNodes(){
                 ctx.fillStyle = "yellow"
                 ctx.fillRect(i*tileSize + border/2,j*tileSize + border/2,tileSize-border,tileSize-border);
             }
+            if(currentAlg == "dijkstra" && !running&& finalPath[i][j] == 1){
+                ctx.fillStyle = "purple"
+                ctx.fillRect(i*tileSize + border/2,j*tileSize + border/2,tileSize-border,tileSize-border);
+            }
 
         }
     }
@@ -128,9 +134,10 @@ function refresh(){
     wallGrid = [];
     distanceGrid = wallGrid.slice();
     visitedGrid = wallGrid.slice();
+    finalPath = wallGrid.slice();
     currentDist = 0;
     currentNodex = startX;
-    currentNodey = startY;
+    currentNodeY = startY;
     for(let i = 0; i < tileWidth; i++){
         var temp = [];
         for(let j = 0; j < tileHeight; j++){
@@ -139,6 +146,7 @@ function refresh(){
         wallGrid.push(temp.slice(0));
         distanceGrid.push(temp.slice(0));
         visitedGrid.push(temp.slice(0));
+        finalPath.push(temp.slice(0));
     }
     
     for(let i = 0; i < tileWidth; i++){
@@ -161,35 +169,26 @@ function dijkstra(){
     if(currentNodeY > 0){
         if(distanceGrid[currentNodex][currentNodeY-1] > currentDist + 1 && wallGrid[currentNodex][currentNodeY-1] == 0){
             distanceGrid[currentNodex][currentNodeY-1] = currentDist + 1;
-            console.log("up");
         }
     }
     //down
     if(currentNodeY < tileHeight-1){
         if(distanceGrid[currentNodex][currentNodeY+1] > currentDist + 1 && wallGrid[currentNodex][currentNodeY+1] == 0){
             distanceGrid[currentNodex][currentNodeY+1] = currentDist + 1;
-            console.log("down");
         }
     }
     //right
     if(currentNodex < tileWidth-1){
-        console.log("distance:"+distanceGrid[currentNodex+1][currentNodeY]);
-        console.log("x:" + currentNodex);
-        console.log("y:" + currentNodeY);
-        console.log("cur" + currentDist);
         if(distanceGrid[currentNodex+1][currentNodeY] > currentDist + 1 && wallGrid[currentNodex+1][currentNodeY] == 0){
             distanceGrid[currentNodex+1][currentNodeY] = currentDist + 1;
-            console.log("right");
         }
     }
     //left
     if(currentNodex > 0){
         if(distanceGrid[currentNodex-1][currentNodeY] > currentDist + 1 && wallGrid[currentNodex-1][currentNodeY] == 0){
             distanceGrid[currentNodex-1][currentNodeY] = currentDist + 1;
-            console.log("left");
         }
     }
-    console.table(visitedGrid);
     visitedGrid[currentNodex][currentNodeY] = 1;
     //find next node
     smallestDist = 999;
@@ -204,5 +203,55 @@ function dijkstra(){
         }
     }
     //check if done
+    if(currentNodex == endX && currentNodeY == endY){
+        running = false;
+    }
     //add final path
+    if(!running){
+        //loop through the lowest dist and add it to final path as = 1
+        var currX = currentNodex;
+        var currY = currentNodeY;
+        for(let dist = currentDist; dist > 0; dist--){
+            //up
+            var foundOne = false;
+            if(currY > 0){
+                if(distanceGrid[currX][currY-1] == dist && !foundOne){
+                    finalPath[currX][currY-1] = 1;
+                    foundOne = true;
+                    currX = currX;
+                    currY = currY-1;
+                }
+            }
+            //down
+            if(currY < tileHeight-1){
+                if(distanceGrid[currX][currY+1] == dist && !foundOne){
+                    finalPath[currX][currY+1] = 1;
+                    foundOne = true;
+                    currX = currX;
+                    currY = currY+1;
+                }
+            }
+            //right
+            if(currX < tileWidth-1){
+                if(distanceGrid[currX+1][currY] == dist && !foundOne){
+                    finalPath[currX+1][currY]  = 1;
+                    foundOne = true;
+                    currX = currX+1;
+                    currY = currY;
+                }
+            }
+            //left
+            if(currX > 0){
+                if(distanceGrid[currX-1][currY] == dist && !foundOne){
+                    finalPath[currX-1][currY]  = 1;
+                    foundOne = true;
+                    currX = currX-1;
+                    currY = currY;
+                }
+            }
+            
+        }
+        console.table(finalPath);
+    }
+
 }
