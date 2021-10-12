@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+    <div class="container">
+        <div class="menu">
+            <ul>
+                <li><label for="algorithms">Choose an Algorithm</label></li>
+                <li><select name="algorithms" id="algorithms">
+                    <option value="aStar">A* Algorithm</option>
+                    <option value="dijkstra">Dijkstra's Algorithm</option>
+                </select></li>
+                <li><input class = "playbutton" id="playbtn" type="button" value="Find Path" onclick="doFunction();" /></li>
+                <li><input class = "refreshbutton" id="refreshbtn" type="button" value="Clear" onclick="refresh();" /></li>
+            </ul>
+        </div>
+        <canvas id = "game"width = "1000" height = "600"></canvas>
+    </div>
+    
+
+
+    <script src="Main.js"></script>
+</body>
+</html>
