@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pathfinding Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+    <div class="container">
+        <div class="menu">
+            <ul>
+                <li><label for="algorithms">Choose an Algorithm</label></li>
+                <li><select name="algorithms" id="algorithms">
+                    <option value="aStar">A* Algorithm(not implemented)</option>
+                    <option value="dijkstra">Dijkstra's Algorithm</option>
+                </select></li>
+                <li><label id="speedlabel">Speed: </label></li>
+                <li><input class = "slider" id="speedslider" type="range" min="1" max="200" value="100"></li>
+                <li><input class = "btn" id="playbtn" type="button" value="Find Path" onclick="doFunction();" /></li>
+                <li><input class = "btn" id="refreshbtn" type="button" value="Clear" onclick="refresh();" /></li>
+            </ul>
+        </div>
+        <canvas id = "game"width = "1000" height = "600"></canvas>
+    </div>
+    
+
+
+    <script src="Main.js"></script>
+</body>
+</html>
