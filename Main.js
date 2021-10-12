@@ -2,7 +2,7 @@
 var currentAlg = document.getElementById("algorithms").value;
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext('2d');
-var speed = 50;
+var speed = document.getElementById("speedslider").value;
 const tileSize = 20;
 const border = 2;
 const tileWidth = Math.floor(canvas.width/tileSize);
@@ -43,6 +43,8 @@ function updateBoard(){
             dijkstra();
         }
     }
+    speed = document.getElementById("speedslider").value;
+    document.getElementById("speedlabel").innerHTML = "Speed: " + speed;
     setTimeout(updateBoard, 1000/speed);
 }
 
@@ -58,7 +60,7 @@ function clearScreen(){
 }
 
 function doFunction(){
-    currentAlg = document.getElementById("algorithms").value
+    currentAlg = document.getElementById("algorithms").value;
     running = true;
 }
 
@@ -78,7 +80,9 @@ function drawNodes(){
                 ctx.fillRect(i*tileSize + border/2,j*tileSize + border/2,tileSize-border,tileSize-border);
             }
             if(currentAlg == "dijkstra" && visitedGrid[i][j] == 1){
-                ctx.fillStyle = "rgb(100,100,100)";
+                const r = (currentDist -distanceGrid[i][j])/currentDist * 256;
+                const g = (currentDist - distanceGrid[i][j])/currentDist * 256;
+                ctx.fillStyle = "rgb("+r+","+g+",100)";
                 ctx.fillRect(i*tileSize + border/2,j*tileSize + border/2,tileSize-border,tileSize-border);
             }
             if(currentAlg == "dijkstra" && currentNodeY == j && currentNodex == i){
@@ -103,10 +107,10 @@ function click(event){
     const boxX = Math.floor(x/tileSize);
     const boxY = Math.floor(y/tileSize);
     
-    if(Math.abs(startX*tileSize-x) < tileSize && Math.abs(startY*tileSize-y) < tileSize && selected == ""){
+    if(Math.abs(startX*tileSize-x) < tileSize && Math.abs(startY*tileSize-y) < tileSize && selected == ""&& !running){
         alert("Selected Start");
         selected = "start";
-    }else if(Math.abs(endX*tileSize-x) < tileSize && Math.abs(endY*tileSize-y) < tileSize && selected == ""){
+    }else if(Math.abs(endX*tileSize-x) < tileSize && Math.abs(endY*tileSize-y) < tileSize && selected == ""&& !running){
         alert("Selected End");
         selected = "end";
     }else if(selected == "start" && !(boxX == endX && boxY == endY)){
@@ -116,15 +120,15 @@ function click(event){
         currentNodex = boxX;
         currentNodeY = boxY;
         selected = "";
-    }else if(selected == "end" && !(boxX == startX && boxY == startY)){
+    }else if(selected == "end" && !(boxX == startX && boxY == startY)&& !running){
         endX = boxX;
         endY = boxY;
         selected = "";
-    }else if((boxX == startX && boxY == startY)||(boxX == endX && boxY == endY)){
+    }else if((boxX == startX && boxY == startY)||(boxX == endX && boxY == endY)&& !running){
         alert("No overlapping start and finish");
-    }else if(wallGrid[boxX][boxY] == 0){
+    }else if(wallGrid[boxX][boxY] == 0 && !running){
         wallGrid[boxX][boxY] = 1;
-    }else if(wallGrid[boxX][boxY] == 1){
+    }else if(wallGrid[boxX][boxY] == 1 && !running){
         wallGrid[boxX][boxY] = 0;
     }
     
