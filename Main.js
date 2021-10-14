@@ -107,10 +107,12 @@ function click(event){
     const boxX = Math.floor(x/tileSize);
     const boxY = Math.floor(y/tileSize);
     
-    if(Math.abs(startX*tileSize-x) < tileSize && Math.abs(startY*tileSize-y) < tileSize && selected == ""&& !running){
+    if(boxX == startX && boxY == startY && selected == ""&& !running){
+        console.log("x" + boxX);
+        console.log("y" + boxY);
         alert("Selected Start");
         selected = "start";
-    }else if(Math.abs(endX*tileSize-x) < tileSize && Math.abs(endY*tileSize-y) < tileSize && selected == ""&& !running){
+    }else if(boxX == endX && boxY == endY && selected == ""&& !running){
         alert("Selected End");
         selected = "end";
     }else if(selected == "start" && !(boxX == endX && boxY == endY)){
