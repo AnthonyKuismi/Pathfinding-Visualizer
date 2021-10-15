@@ -13,6 +13,8 @@ var currentNodeY = 0;
 var smallestDist = 999;
 var currentDist = 0;
 
+var shiftDown = false;
+
 
 var wallGrid;
 var visitedGrid;
@@ -39,6 +41,8 @@ updateBoard();
 document.getElementById("game").addEventListener("click",click);
 document.getElementById("game").addEventListener("mousedown",line);
 document.getElementById("game").addEventListener("mouseup",release);
+document.addEventListener("keydown",keydown);
+document.addEventListener("keyup",keyup);
 
 function updateBoard(){
     clearScreen();
@@ -176,9 +180,9 @@ function release(event){
             }
             for(let i = iStart; i <= iEnd; i ++){
                 const yBox = Math.round(slope*i + b);
-                if(wallGrid[i][yBox] == 0 && !running){
+                if(wallGrid[i][yBox] == 0 && !running && !shiftDown){
                     wallGrid[i][yBox] = 1;
-                }else if(wallGrid[i][yBox] == 1 && !running){
+                }else if(wallGrid[i][yBox] == 1 && !running && shiftDown){
                     wallGrid[i][yBox] = 0;
                 }
             }
@@ -192,9 +196,9 @@ function release(event){
             }
             for(let i = iStart; i <= iEnd; i ++){
                 const xBox = Math.round((i-b)/slope);
-                if(wallGrid[xBox][i] == 0 && !running){
+                if(wallGrid[xBox][i] == 0 && !running && !shiftDown){
                     wallGrid[xBox][i] = 1;
-                }else if(wallGrid[xBox][i] == 1 && !running){
+                }else if(wallGrid[xBox][i] == 1 && !running && shiftDown){
                     wallGrid[xBox][i] = 0;
                 }
             }
@@ -208,9 +212,9 @@ function release(event){
             }
             for(let i = iStart; i <= iEnd; i ++){
                 const xBox = boxX;
-                if(wallGrid[xBox][i] == 0 && !running){
+                if(wallGrid[xBox][i] == 0 && !running && !shiftDown){
                     wallGrid[xBox][i] = 1;
-                }else if(wallGrid[xBox][i] == 1 && !running){
+                }else if(wallGrid[xBox][i] == 1 && !running && shiftDown){
                     wallGrid[xBox][i] = 0;
                 }
             }
@@ -219,6 +223,20 @@ function release(event){
         
     }
     
+}
+
+function keydown(event){
+    const key = event.key;
+    if(key == "Shift"){
+        shiftDown = true;
+    }
+}
+
+function keyup(event){
+    const key = event.key;
+    if(key == "Shift"){
+        shiftDown = false;
+    }
 }
 
 function refresh(){
