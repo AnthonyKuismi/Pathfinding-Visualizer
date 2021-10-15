@@ -27,6 +27,9 @@ var startY = 0;
 var endX = tileWidth-1;
 var endY = tileHeight-1;
 
+var lineStartX;
+var lineStartY;
+
 var selected = "";
 
 var running = false;
@@ -34,6 +37,8 @@ refresh();
 updateBoard();
 
 document.getElementById("game").addEventListener("click",click);
+document.getElementById("game").addEventListener("mousedown",line);
+document.getElementById("game").addEventListener("mouseup",release);
 
 function updateBoard(){
     clearScreen();
@@ -108,8 +113,6 @@ function click(event){
     const boxY = Math.floor(y/tileSize);
     
     if(boxX == startX && boxY == startY && selected == ""&& !running){
-        console.log("x" + boxX);
-        console.log("y" + boxY);
         alert("Selected Start");
         selected = "start";
     }else if(boxX == endX && boxY == endY && selected == ""&& !running){
@@ -132,6 +135,88 @@ function click(event){
         wallGrid[boxX][boxY] = 1;
     }else if(wallGrid[boxX][boxY] == 1 && !running){
         wallGrid[boxX][boxY] = 0;
+    }
+    
+}
+
+function line(event){ 
+    if(event.button == 1){
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const boxX = Math.floor(x/tileSize);
+        const boxY = Math.floor(y/tileSize);
+        lineStartX = boxX;
+        lineStartY = boxY;
+    }
+    
+}
+
+function release(event){
+    if(event.button == 1){
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const boxX = Math.floor(x/tileSize);
+        const boxY = Math.floor(y/tileSize);
+        //check each box that it goes through
+        const slope = (boxY-lineStartY)/(boxX-lineStartX);
+        var defined = true;
+        if(boxX - lineStartX == 0){
+           defined = false; 
+        }      
+        console.log(slope);
+        if(Math.abs(slope) <= 1){
+            const b = boxY -slope*boxX;
+            var iStart = lineStartX;
+            var iEnd = boxX;
+            if (iStart > iEnd){
+                iStart = boxX;
+                iEnd = lineStartX;
+            }
+            for(let i = iStart; i <= iEnd; i ++){
+                const yBox = Math.round(slope*i + b);
+                if(wallGrid[i][yBox] == 0 && !running){
+                    wallGrid[i][yBox] = 1;
+                }else if(wallGrid[i][yBox] == 1 && !running){
+                    wallGrid[i][yBox] = 0;
+                }
+            }
+        }else if(defined){
+            const b = boxY -slope*boxX;
+            var iStart = lineStartY;
+            var iEnd = boxY;
+            if (iStart > iEnd){
+                iStart = boxY;
+                iEnd = lineStartY;
+            }
+            for(let i = iStart; i <= iEnd; i ++){
+                const xBox = Math.round((i-b)/slope);
+                if(wallGrid[xBox][i] == 0 && !running){
+                    wallGrid[xBox][i] = 1;
+                }else if(wallGrid[xBox][i] == 1 && !running){
+                    wallGrid[xBox][i] = 0;
+                }
+            }
+        }else{
+            const b = boxY -slope*boxX;
+            var iStart = lineStartY;
+            var iEnd = boxY;
+            if (iStart > iEnd){
+                iStart = boxY;
+                iEnd = lineStartY;
+            }
+            for(let i = iStart; i <= iEnd; i ++){
+                const xBox = boxX;
+                if(wallGrid[xBox][i] == 0 && !running){
+                    wallGrid[xBox][i] = 1;
+                }else if(wallGrid[xBox][i] == 1 && !running){
+                    wallGrid[xBox][i] = 0;
+                }
+            }
+        }
+        
+        
     }
     
 }
