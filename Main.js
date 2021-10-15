@@ -313,48 +313,65 @@ function dijkstra(){
     if(currentNodeY > 0){
         if(distanceGrid[currentNodex][currentNodeY-1] > currentDist + 1 && wallGrid[currentNodex][currentNodeY-1] == 0){
             distanceGrid[currentNodex][currentNodeY-1] = currentDist + 1;
+            //check if found end node
+            if(currentNodex == endX && currentNodeY - 1 == endY){
+                running = false;
+            }
         }
     }
     //down
     if(currentNodeY < tileHeight-1){
         if(distanceGrid[currentNodex][currentNodeY+1] > currentDist + 1 && wallGrid[currentNodex][currentNodeY+1] == 0){
             distanceGrid[currentNodex][currentNodeY+1] = currentDist + 1;
+            //check if found end node
+            if(currentNodex == endX && currentNodeY + 1 == endY){
+                running = false;
+            }
         }
     }
     //right
     if(currentNodex < tileWidth-1){
         if(distanceGrid[currentNodex+1][currentNodeY] > currentDist + 1 && wallGrid[currentNodex+1][currentNodeY] == 0){
             distanceGrid[currentNodex+1][currentNodeY] = currentDist + 1;
+            //check if found end node
+            if(currentNodex + 1 == endX&& currentNodeY == endY){
+                running = false;
+            }
         }
     }
     //left
     if(currentNodex > 0){
         if(distanceGrid[currentNodex-1][currentNodeY] > currentDist + 1 && wallGrid[currentNodex-1][currentNodeY] == 0){
             distanceGrid[currentNodex-1][currentNodeY] = currentDist + 1;
+            //check if found end node
+            if(currentNodex -1== endX && currentNodeY == endY){
+                running = false;
+            }
         }
     }
     visitedGrid[currentNodex][currentNodeY] = 1;
     //find next node
     smallestDist = 999;
-    for(let i = 0; i < tileWidth; i++){
-        for(let j = 0; j < tileHeight; j++){
-            if(distanceGrid[i][j] < smallestDist && visitedGrid[i][j] == 0){
-                smallestDist = distanceGrid[i][j];
-                currentNodex = i;
-                currentNodeY = j;
-                currentDist = smallestDist;
+    if(running){
+        for(let i = 0; i < tileWidth; i++){
+            for(let j = 0; j < tileHeight; j++){
+                if(distanceGrid[i][j] < smallestDist && visitedGrid[i][j] == 0){
+                    smallestDist = distanceGrid[i][j];
+                    currentNodex = i;
+                    currentNodeY = j;
+                    currentDist = smallestDist;
+                }
             }
         }
     }
-    //check if done
-    if(currentNodex == endX && currentNodeY == endY){
-        running = false;
-    }
+
     //add final path
     if(!running){
         //loop through the lowest dist and add it to final path as = 1
-        var currX = currentNodex;
-        var currY = currentNodeY;
+        var currX = endX;
+        var currY = endY;
+        currentNodex = currX;
+        currentNodeY = currY;
         for(let dist = currentDist; dist > 0; dist--){
             //up
             var foundOne = false;
