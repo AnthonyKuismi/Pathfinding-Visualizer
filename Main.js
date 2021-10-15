@@ -122,17 +122,19 @@ function click(event){
     }else if(boxX == endX && boxY == endY && selected == ""&& !running){
         alert("Selected End");
         selected = "end";
-    }else if(selected == "start" && !(boxX == endX && boxY == endY)){
+    }else if(selected == "start" &&  wallGrid[boxX][boxY] == 0 && !(boxX == endX && boxY == endY)){
         startX = boxX;
         startY = boxY;
         clearAll();
         currentNodex = boxX;
         currentNodeY = boxY;
         selected = "";
-    }else if(selected == "end" && !(boxX == startX && boxY == startY)&& !running){
+    }else if(selected == "end" && wallGrid[boxX][boxY] == 0 &&!(boxX == startX && boxY == startY)&& !running){
         endX = boxX;
         endY = boxY;
         selected = "";
+    }else if((selected == "end" || selected == "start") && wallGrid[boxX][boxY]==1){
+        alert("Can't place start or finish on wall");
     }else if((boxX == startX && boxY == startY)||(boxX == endX && boxY == endY)&& !running){
         alert("No overlapping start and finish");
     }else if(wallGrid[boxX][boxY] == 0 && !running){
@@ -180,7 +182,7 @@ function release(event){
             }
             for(let i = iStart; i <= iEnd; i ++){
                 const yBox = Math.round(slope*i + b);
-                if(wallGrid[i][yBox] == 0 && !running && !shiftDown){
+                if(wallGrid[i][yBox] == 0 && !running && !shiftDown && !(i == startX && yBox == startY) && !(i == endX && yBox == endY)){
                     wallGrid[i][yBox] = 1;
                 }else if(wallGrid[i][yBox] == 1 && !running && shiftDown){
                     wallGrid[i][yBox] = 0;
@@ -196,7 +198,7 @@ function release(event){
             }
             for(let i = iStart; i <= iEnd; i ++){
                 const xBox = Math.round((i-b)/slope);
-                if(wallGrid[xBox][i] == 0 && !running && !shiftDown){
+                if(wallGrid[xBox][i] == 0 && !running && !shiftDown && !(xBox == startX && i == startY) && !(xBox == endX && i == endY)){
                     wallGrid[xBox][i] = 1;
                 }else if(wallGrid[xBox][i] == 1 && !running && shiftDown){
                     wallGrid[xBox][i] = 0;
@@ -212,7 +214,7 @@ function release(event){
             }
             for(let i = iStart; i <= iEnd; i ++){
                 const xBox = boxX;
-                if(wallGrid[xBox][i] == 0 && !running && !shiftDown){
+                if(wallGrid[xBox][i] == 0 && !running && !shiftDown && !(xBox == startX && i == startY) && !(xBox == endX && i == endY)){
                     wallGrid[xBox][i] = 1;
                 }else if(wallGrid[xBox][i] == 1 && !running && shiftDown){
                     wallGrid[xBox][i] = 0;
