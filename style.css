@@ -45,13 +45,29 @@ html, body{
     position: absolute;
     
 }
-#refreshbtn{
+#clearbtn{
     top:10px;
     right: 190px;
     position: absolute;
 }
+#restartbtn{
+    top:10px;
+    right: 460px;
+    position: absolute;
+}
+#helpbtn{
+    top:10px;
+    right: 590px;
+    position: absolute;
+}
+#speedlabel{
+    position: absolute;
+    top: 10px;
+    right: 330px;
+    font-size: large;
+}
 .slider {
-    top: 20px;
+    top: 30px;
     right: 320px;
     position: absolute;    
 }
@@ -68,7 +84,9 @@ html, body{
     cursor: pointer;
     -webkit-appearance: none;
 }
-
+label{
+    color: white;
+}
 li .btn{
     text-decoration: none;
     color: white;    

@@ -35,7 +35,7 @@ var lineStartY;
 var selected = "";
 
 var running = false;
-refresh();
+clearAll();
 updateBoard();
 
 document.getElementById("game").addEventListener("click",click);
@@ -44,6 +44,7 @@ document.getElementById("game").addEventListener("mouseup",release);
 document.addEventListener("keydown",keydown);
 document.addEventListener("keyup",keyup);
 
+//updates the board
 function updateBoard(){
     clearScreen();
     drawNodes();
@@ -57,6 +58,7 @@ function updateBoard(){
     setTimeout(updateBoard, 1000/speed);
 }
 
+//clears the screen and makes boxes
 function clearScreen(){
     ctx.fillStyle = "black";
     ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -67,15 +69,13 @@ function clearScreen(){
         }
     }
 }
-
+//function that is activated when start is clicked and sets the current alg to running
 function doFunction(){
     currentAlg = document.getElementById("algorithms").value;
     running = true;
 }
-
+//draws all the nodes onto the screen
 function drawNodes(){
-    
-    
     ctx.fillStyle = "green";
     ctx.fillRect(endX*tileSize + border/2,endY*tileSize + border/2,tileSize-border,tileSize-border);
     for(let i = 0; i < tileWidth; i++){
@@ -108,7 +108,7 @@ function drawNodes(){
     ctx.fillStyle = "red";
     ctx.fillRect(startX*tileSize + border/2,startY*tileSize + border/2,tileSize-border,tileSize-border);
 }
-
+//activated when board is clicked
 function click(event){
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -125,7 +125,7 @@ function click(event){
     }else if(selected == "start" && !(boxX == endX && boxY == endY)){
         startX = boxX;
         startY = boxY;
-        refresh();
+        clearAll();
         currentNodex = boxX;
         currentNodeY = boxY;
         selected = "";
@@ -142,7 +142,7 @@ function click(event){
     }
     
 }
-
+//activated when the wall line starts
 function line(event){ 
     if(event.button == 1){
         const rect = canvas.getBoundingClientRect();
@@ -155,7 +155,7 @@ function line(event){
     }
     
 }
-
+//activated when the wall line ends
 function release(event){
     if(event.button == 1){
         const rect = canvas.getBoundingClientRect();
@@ -224,22 +224,57 @@ function release(event){
     }
     
 }
-
+//activated when key is pressed down
 function keydown(event){
     const key = event.key;
     if(key == "Shift"){
         shiftDown = true;
     }
 }
-
+//activated when key is let go of
 function keyup(event){
     const key = event.key;
     if(key == "Shift"){
         shiftDown = false;
     }
 }
-
-function refresh(){
+//function to resetart the current alg
+function restart(){
+    distanceGrid = [];
+    visitedGrid = distanceGrid.slice();
+    finalPath = distanceGrid.slice();
+    currentDist = 0;
+    currentNodex = startX;
+    currentNodeY = startY;
+    for(let i = 0; i < tileWidth; i++){
+        var temp = [];
+        for(let j = 0; j < tileHeight; j++){
+            temp.push(0);
+        }
+        distanceGrid.push(temp.slice(0));
+        visitedGrid.push(temp.slice(0));
+        finalPath.push(temp.slice(0));
+    }
+    
+    for(let i = 0; i < tileWidth; i++){
+        for(let j = 0; j < tileHeight; j++){
+            if(!(i==startX && j==startY)){
+                distanceGrid[i][j] = 999;
+            }
+        }
+    }
+    running = false;
+}
+//alerts with basic help
+function help(){
+    alert("Left click on the start or the end to change the position of them.");
+    alert("Left click on cells to toggle walls in respective cell.");
+    alert("Middle click and move mouse to make a line of walls.");
+    alert("Middle click + shift and move mouse to delete a line of walls.");
+}
+//funcition to clear the board
+function clearAll(){
+    console.log("clear");
     wallGrid = [];
     distanceGrid = wallGrid.slice();
     visitedGrid = wallGrid.slice();
@@ -267,7 +302,7 @@ function refresh(){
     }
     running = false;
 }
-
+//dijkstra alg
 function dijkstra(){
     //unvisited = 0
     //visited = 1
